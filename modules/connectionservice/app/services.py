@@ -32,18 +32,22 @@ class ConnectionServicer(connection_pb2_grpc.ConnectionServiceServicer):
 
         return connection_pb2.ConnectionMessage(**request_value)
 
+def grpc_server():
 
-server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
-connection_pb2_grpc.add_ConnectionServiceServicer_to_server(ConnectionServicer(), server)
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
+    connection_pb2_grpc.add_ConnectionServiceServicer_to_server(ConnectionServicer(), server)
 
-print("Server starting on port 50056...")
-server.add_insecure_port("[::]:50056")
-server.start()
-print("Server started")
-try:
-    while True:
-        time.sleep(100)
-        print(".")
-except:
-    print("error")
-    server.stop(0)
+    print("Server starting on port 50056...")
+    server.add_insecure_port("[::]:50056")
+    server.start()
+    print("Server started")
+    try:
+        while True:
+            time.sleep(100)
+            print(".")
+    except:
+        print("error")
+        server.stop(0)
+
+if __name__ == "__main__":
+    grpc_server()
