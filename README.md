@@ -1,4 +1,25 @@
 # UdaConnect
+
+## Deploy Kafka
+1. Install helm
+2. Deploy kafka using the helm chart provided by bitnami:
+```bash
+helm install udaconnect-kafka bitnami/kafka --set service.type=NodePort --set service.ports.external=9092
+```
+3. Create topic & test ##TODO!
+```bash
+kubectl run udaconnect-kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.1.0-debian-10-r89 --namespace default --command -- sleep infinity
+kubectl exec --tty -i udaconnect-kafka-client --namespace default -- bash
+kafka-console-producer.sh --broker-list udaconnect-kafka-0.udaconnect-kafka-headless.default.svc.cluster.local:9092 --topic test
+kafka-console-consumer.sh --bootstrap-server udaconnect-kafka.default.svc.cluster.local:9092 --topic test --from-beginning
+
+bin/kafka-topics.sh --create --topic orders --bootstrap-server localhost:9092
+```
+
+
+
+# Appendinx - initial readme
+
 ## Overview
 ### Background
 Conferences and conventions are hotspots for making connections. Professionals in attendance often share the same interests and can make valuable business and personal connections with one another. At the same time, these events draw a large crowd and it's often hard to make these connections in the midst of all of these events' excitement and energy. To help attendees make connections, we are building the infrastructure for a service that can inform attendees if they have attended the same booths and presentations at an event.
