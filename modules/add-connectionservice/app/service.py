@@ -1,3 +1,4 @@
+from os import environ
 import json
 import time
 from concurrent import futures
@@ -10,7 +11,7 @@ import connection_pb2
 import connection_pb2_grpc
 
 TOPIC_NAME = "connections"
-KAFKA_SERVER = "kafka-service:9092"
+KAFKA_SERVER = environ["KAFKA_SERVICE"]+":"+environ["KAFKA_PORT"]
 
 producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER)
 

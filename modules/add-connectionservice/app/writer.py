@@ -4,9 +4,10 @@ import connection_pb2_grpc
 
 print("Sending sample payload..")
 
-channel = grpc.insecure_channel("localhost:50056")
+channel = grpc.insecure_channel("localhost:30002")
 stub = connection_pb2_grpc.ConnectionServiceStub(channel)
 
+#Example connection message
 connection = connection_pb2.ConnectionMessage(
     id=100,
     person_id=1,

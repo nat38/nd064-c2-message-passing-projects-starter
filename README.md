@@ -1,4 +1,4 @@
-# UdaConnect
+# UdaConnect - Deployment and Setup
 
 ## Deploy Kafka
 1. Install helm
@@ -6,17 +6,46 @@
 ```bash
 helm install udaconnect-kafka bitnami/kafka --set service.type=NodePort --set service.ports.external=9092
 ```
-3. Create topic & test ##TODO!
+3. Create topic
 ```bash
 kubectl run udaconnect-kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.1.0-debian-10-r89 --namespace default --command -- sleep infinity
 kubectl exec --tty -i udaconnect-kafka-client --namespace default -- bash
-kafka-console-producer.sh --broker-list udaconnect-kafka-0.udaconnect-kafka-headless.default.svc.cluster.local:9092 --topic test
-kafka-console-consumer.sh --bootstrap-server udaconnect-kafka.default.svc.cluster.local:9092 --topic test --from-beginning
+bin/kafka-topics.sh --create --topic connections --bootstrap-server localhost:9092
 
-bin/kafka-topics.sh --create --topic orders --bootstrap-server localhost:9092
+
 ```
 
+## Deploy Services
+Connect to your K8s cluster and run the following commands:
+```bash
+kubectl apply -f deployment/db-configmap.yaml
+kubectl apply -f deployment/db-secret.yaml
+kubectl apply -f deployment/kafka-configmap.yaml
+kubectl apply -f deployment/postgres.yaml
+kubectl apply -f deployment/uda-personservice.yaml
+kubectl apply -f deployment/uda-connectionservice.yaml
+kubectl apply -f deployment/uda-locationservice.yaml
+kubectl apply -f deployment/uda-kafkaconsumer.yaml
+kubectl apply -f deployment/udaconnect-app.yaml
+```
+ Seed your database against the postgres pod. (kubectl get pods will give you the POD_NAME)
+```bash
+sh scripts/run_db_command.sh <POD_NAME>
+```
 
+## Access the App and API
+The app is available at http://localhost:30000/
+Testing of the Rest apis can be done using the postman collection in the docs folder
+
+## Test the GRPC Interface
+You can use the modules/add-connectionservice/app/writer.py file and run it to test the grpc interface. Run the postman get connections service afterwards to verify that the connection was added.
+
+Test the Kafka Environment by ssh into the kafka client pod:
+```bash
+kubectl run udaconnect-kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.1.0-debian-10-r89 --namespace default --command -- sleep infinity
+kubectl exec --tty -i udaconnect-kafka-client --namespace default -- bash
+kafka-console-consumer.sh --bootstrap-server udaconnect-kafka.default.svc.cluster.local:9092 --topic connections --from-beginning
+```
 
 # Appendinx - initial readme
 

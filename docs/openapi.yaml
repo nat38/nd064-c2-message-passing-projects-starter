@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  description: API for ordering computers from IT
+  version: "1.0.0"
+  title: Computer Orders API
+paths:
+  /api/locations/{location_id}:
+    get:
+      summary: Retrieves specific location by id
+      operationId: getLocationById
+      description: Retrieves specific location by id
+      parameters:
+        - in: path
+          name: location_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the location to get
+      responses:
+        '200':
+          description: Specific location
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad input parameter
+  /api/persons:
+    get:
+      summary: Retrieves all persons
+      operationId: getAllPersons
+      description: Retrieves all persons that are stored in the db.
+      responses:
+        '200':
+          description: All persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+        '400':
+          description: Bad input parameter
+  /api/persons/{person_id}:
+    get:
+      summary: Retrieves specific persons
+      operationId: getSpecificPerson
+      description: Retrieves specific person by id
+      parameters:
+        - in: path
+          name: person_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the person to get
+      responses:
+        '200':
+          description: Specific person
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Person'
+        '400':
+          description: Bad input parameter
+  
+
+
+  /api/persons/{person_id}/connection:
+    get:
+      summary: Retrieves connections
+      operationId: getAllConnections
+      description: Retrieves all stored connections of a person from the db
+      parameters:
+        - in: path
+          name: person_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the person to get the connections from
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date-time
+          required: true
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date-time
+          required: true
+        - in: query
+          name: distance
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Connections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Connections'
+        '400':
+          description: Bad input parameter
+  
+components:
+  schemas:
+    Location:
+      type: object
+      required:
+        - latitude
+        - id
+        - creation_time
+        - person_id
+        - longitude
+      properties:
+        latitude:
+          type: string
+          example: '-122.290883'
+        id: 
+          type: integer
+          example: 1
+        creation_time:
+          type: string
+          format: date-time
+          example: '2020-08-15T10:37:06'
+        person_id:
+          type: integer
+          example: 6
+        longitude:
+          type: string
+          example: '37.55363'
+    Person:
+      type: object
+      required:
+      - company_name
+      - last_name
+      - id
+      - first_name
+      properties:
+        company_name:
+          type: string
+          example: 'Paul Badman & Associates'
+        last_name:
+          type: string
+          example: 'Badman'
+        id:
+          type: integer
+          example: 8
+        first_name:
+          type: string
+          example: 'Paul'
+    Connections:
+      type: object
+      required:
+      - location
+      - person
+      properties:
+        location:
+          type: object
+          $ref: '#/components/schemas/Location'
+        person:
+          type: object
+          $ref: '#/components/schemas/Person'
