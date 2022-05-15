@@ -21,7 +21,6 @@ DATE_FORMAT = "%Y-%m-%d"
 api = Namespace("UdaLocationService", description="Retreive locaions")  # noqa
 
 
-# TODO: This needs better exception handling
 logger.info("Recevied get request")
 
 @api.route("/locations/<location_id>")

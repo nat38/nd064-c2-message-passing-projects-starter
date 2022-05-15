@@ -15,7 +15,7 @@ TOPIC_NAME = "connections"
 KAFKA_SERVER = environ["KAFKA_SERVICE"]+":"+environ["KAFKA_PORT"]
 
 logger.info(f"connecting to " + KAFKA_SERVER)
-#consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=KAFKA_SERVER)
+
 consumer = KafkaConsumer("connections", bootstrap_servers="udaconnect-kafka.default.svc.cluster.local:9092")
 logger.info(f"connected..")
 
